@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage("Install Dependencies") {
             steps { sh "npm install" }
         }
 
@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        // ✅ OWASP Dependency-Check (USES NVD API KEY SECURELY)
+        // ✅ OWASP (FAST – persistent cache)
         stage("OWASP Dependency Check Scan") {
             steps {
                 withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
@@ -70,7 +70,7 @@ pipeline {
                             --disableYarnAudit
                             --disableNodeAudit
                             --nvdApiKey=${NVD_API_KEY}
-                            --data ./dc-data
+                            --data /var/lib/jenkins/odc-data
                         """
                     )
                 }
@@ -82,9 +82,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'docker-cred', variable: 'dockerpwd')]) {
-                        sh "docker login -u harishnshetty -p ${dockerpwd}"
-                        sh "docker-scout quickview fs://. > quickview-report.txt"
-                        sh "docker-scout cves fs://. > cves-report.txt"
+                        sh '''
+                        echo "$dockerpwd" | docker login -u shankyash --password-stdin
+                        docker-scout quickview fs://. > quickview-report.txt
+                        docker-scout cves fs://. > cves-report.txt
+                        '''
                     }
                 }
                 archiveArtifacts artifacts: '*.txt, *.json', fingerprint: true
@@ -94,7 +96,7 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 script {
-                    env.IMAGE_TAG = "harishnshetty/flipkart:${BUILD_NUMBER}"
+                    env.IMAGE_TAG = "shankyash/flipkart:${BUILD_NUMBER}"
                     sh "docker rmi -f flipkart ${env.IMAGE_TAG} || true"
                     sh "docker build -t flipkart ."
                 }
@@ -105,9 +107,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'docker-cred', variable: 'dockerpwd')]) {
-                        sh "docker login -u harishnshetty -p ${dockerpwd}"
-                        sh "docker-scout cves flipkart > image-cves-report.txt"
-                        sh "docker-scout recommendations flipkart > image-recommendations.txt"
+                        sh '''
+                        echo "$dockerpwd" | docker login -u shankyash --password-stdin
+                        docker-scout cves flipkart > image-cves-report.txt
+                        docker-scout recommendations flipkart > image-recommendations.txt
+                        '''
                     }
                 }
                 archiveArtifacts artifacts: '*.txt, *.json', fingerprint: true
@@ -134,12 +138,14 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'docker-cred', variable: 'dockerpwd')]) {
-                        sh "docker login -u harishnshetty -p ${dockerpwd}"
-                        sh "docker tag flipkart ${env.IMAGE_TAG}"
-                        sh "docker push ${env.IMAGE_TAG}"
-                        sh "docker tag flipkart harishnshetty/flipkart:latest"
-                        sh "docker push harishnshetty/flipkart:latest"
-                        sh "docker logout"
+                        sh '''
+                        echo "$dockerpwd" | docker login -u shankyash --password-stdin
+                        docker tag flipkart shankyash/flipkart:${BUILD_NUMBER}
+                        docker push shankyash/flipkart:${BUILD_NUMBER}
+                        docker tag flipkart shankyash/flipkart:latest
+                        docker push shankyash/flipkart:latest
+                        docker logout
+                        '''
                     }
                 }
             }
@@ -166,7 +172,8 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'zap_report.html,zap_report.json', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'zap_report.html,zap_report.json',
+                        allowEmptyArchive: true
                 }
             }
         }
