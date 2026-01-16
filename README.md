@@ -559,28 +559,4 @@ Password: encrypted-password
 - Subdomain (Wild-card ACM)
 - Attach the ingress
 
-## OWASP ZAPROXY
-
-[![Video Tutorial](https://github.com/harishnshetty/image-data-project/blob/d13e0ad9f2fc91499853cc8624b3c2d50f8f2e88/flipkart3.jpg)](https://youtu.be/KwKtMHBQXk4)
-
-
-##  Delete EKS Cluster (Cleanup) finally u done a project 
- - For more conents reach out https://harishnshetty.github.io/projects.html
-
-```bash
-eksctl delete cluster --name my-cluster --region ap-south-1
-```
-
-- Delete the ECR Repo
-- Jenkins IAM User
-- Delete the EC2 instance
-- Delete the Access key in the Admin Account
-- Delete the Slack Token and Delete the Slack Channel
-- Delete the gmail and Docket hub tokens
-- Delete the Route53 and ACM
-
-## Notes and Recommendations
-
-- Replace `<VERSION>`, `<your-server-ip>`, and other placeholders with specific values for your setup.
-- Prefer pinned versions for production environments rather than "latest".
-- Consult each project's official documentation for the most up-to
+o
