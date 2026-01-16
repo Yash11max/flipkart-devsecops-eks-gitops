@@ -1,15 +1,6 @@
 # How to Implement Full DevSecOps + GitOps Pipeline on EKS | Flipkart Clone with Jenkins, Docker, Argo CD, SonarQube
 
 
-## For more projects, check out  
-[https://harishnshetty.github.io/projects.html](https://harishnshetty.github.io/projects.html)
-
-[![Video Tutorial](https://github.com/harishnshetty/image-data-project/blob/d13e0ad9f2fc91499853cc8624b3c2d50f8f2e88/flipkart1.jpg)](https://youtu.be/KwKtMHBQXk4)
-
-
-## Flipkart Clone Sample Image
-
-[![Video Tutorial](https://github.com/harishnshetty/image-data-project/blob/d13e0ad9f2fc91499853cc8624b3c2d50f8f2e88/flipkart2.jpg)](https://youtu.be/KwKtMHBQXk4)
 
 ## Jenkins Setup
 - Instance Type :- c5.xlarge  [4 Cpu 8Gb Ram ] 
